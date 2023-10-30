@@ -1,31 +1,31 @@
-Function.prototype.callCustom = function(context) {
-  // preCheck：判断传入的this，为null|undefined时需要赋值为window|global
-  if (!context) {
-    context = typeof window === 'undefined' ? global : window;
-  }
-  // 1、将函数设为对象的属性
-  context.fn = this;
-  // 2、获取执行callCustom传递的参数（从第二个参数起-最后一个参数）
-  let params = [...arguments].slice(1);
-  // 3、执行函数
-  let result = context.fn(...params);
-  // 4、删除函数
-  delete context.fn;
+Function.prototype.myCall = function (ctx, ...args) {
+  // preCheck：判断传入的ctx，为null|undefined时
+  // 1、将this设为对象的属性，属性值需要唯一性
+  // 2、执行属性方法
+  // 3、返回结果
+  ctx = ctx === undefined || ctx === null ? globalThis : Object(ctx);
+  const key = Symbol("temp");
+  Object.defineProperty(ctx, key, {
+    enumerable: false,
+    value: this,
+  });
+  const result = ctx[key](...args);
   return result;
-}
-
+};
 
 // test
 var foo = {
-  name: 'foo'
+  name: "foo",
 };
-var name = 'bar';
+var name = "bar";
 function bar(sex, age) {
   console.log(sex);
   console.log(age);
-  console.log(this.name);
+  console.log(this);
 }
 
-bar.callCustom(foo, '男', 23);
+bar.myCall(foo, "男", 23);
 console.log("==============");
-bar.callCustom(null, '女', 13);
+bar.myCall(null, "女", 13);
+console.log("==============");
+bar.myCall(1, "女", 13);

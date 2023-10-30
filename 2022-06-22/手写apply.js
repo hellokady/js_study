@@ -1,16 +1,18 @@
 Function.prototype.myApply = function (ctx, rest) {
-  if (!ctx) {
-    ctx = typeof window !== 'undefined' ? window : global;
-  }
+  ctx = ctx === undefined || ctx === null ? globalThis : Object(ctx);
+
   let result;
-  ctx.fn = this;
+  const key = Symbol("temp");
+  Object.defineProperty(ctx, key, {
+    enumerable: false,
+    value: this,
+  });
   if (rest === null || rest === undefined) {
-    result = ctx.fn(rest);
-  } else if (typeof rest === 'object') {
-    result = ctx.fn(...rest);
+    result = ctx[key](rest);
+  } else if (typeof rest === "object") {
+    result = ctx[key](...rest);
   }
-  delete rest;
   return result;
 };
 
-console.log(Math.max.myApply(null, [1,2,3,4,5]));
+console.log(Math.max.myApply(null, [1, 2, 3, 4, 5]));
