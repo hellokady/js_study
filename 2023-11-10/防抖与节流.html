@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "debounce": "./debounce.js",
+          "throttle": "./throttle.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import debounce from "debounce";
+      import throttle from "throttle";
+
+      document.getElementById("deboucne").addEventListener(
+        "click",
+        debounce(() => {
+          console.log("防抖");
+        }, 5000)
+      );
+      document.getElementById("throttle").addEventListener(
+        "input",
+        throttle((e) => {
+          console.log(e, this, "节流");
+        }, 2000)
+      );
+    </script>
+  </head>
+  <body>
+    <button id="deboucne">防抖</button>
+    <div>
+      <label for="throttle">节流</label>
+      <input type="text" id="throttle" />
+    </div>
+  </body>
+</html>
