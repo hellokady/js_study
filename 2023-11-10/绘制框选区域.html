@@ -31,9 +31,6 @@
         }
         element = document.createElement("div");
         element.style.position = "absolute";
-        element.style.border = "1px solid black";
-        element.style.top = elementRectInfo.top + "px";
-        element.style.left = elementRectInfo.left + "px";
         element.style.border = "1px solid transparent";
         document.body.appendChild(element);
       });
@@ -46,8 +43,12 @@
         elementRectInfo.height = Math.abs(height);
 
         window.requestAnimationFrame(() => {
-          element.style.width = elementRectInfo.width + "px";
-          element.style.height = elementRectInfo.height + "px";
+          for (const key in elementRectInfo) {
+            if (Object.prototype.hasOwnProperty.call(elementRectInfo, key)) {
+              element.style[key] = elementRectInfo[key] + "px";
+            }
+          }
+
           element.style.borderColor = "black";
         });
       });

@@ -24,12 +24,19 @@ const p1 = Promise.resolve(1);
 const p2 = new Promise((resolve, reject) => {
   resolve(2);
 });
-const p3 = new Promise((resolve,reject) => {
-  resolve(3);
+const p3 = Promise.reject("p3 rejected");
+const p4 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject("p4 rejected");
+  }, 2000);
 });
 
-const p4 = Promise.myAll([p1, p2, p3]);
+const all = Promise.myAll([p1, p2, p3, p4]);
 
-p4.then((res) => {
-  console.log(res);
-});
+all
+  .then((res) => {
+    console.log(res);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
