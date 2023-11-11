@@ -19,6 +19,8 @@
         left: 0,
         width: 0,
         height: 0,
+        startX: 0,
+        startY: 0,
       };
       let element;
       let isPainting = false;
@@ -26,25 +28,33 @@
         isPainting = true;
         elementRectInfo.top = e.y;
         elementRectInfo.left = e.x;
+        elementRectInfo.startX = e.x;
+        elementRectInfo.startY = e.y;
+
         if (element) {
           document.body.removeChild(element);
         }
         element = document.createElement("div");
-        element.style.position = "absolute";
+        element.style.position = "fixed";
         element.style.border = "1px solid transparent";
         document.body.appendChild(element);
       });
       window.addEventListener("mousemove", (e) => {
         if (!isPainting) return;
 
-        const width = e.x - elementRectInfo.left;
-        const height = e.y - elementRectInfo.top;
+        const width = e.x - elementRectInfo.startX;
+        const height = e.y - elementRectInfo.startY;
         elementRectInfo.width = Math.abs(width);
         elementRectInfo.height = Math.abs(height);
+        elementRectInfo.left = Math.min(e.x, elementRectInfo.startX);
+        elementRectInfo.top = Math.min(e.y, elementRectInfo.startY);
 
         window.requestAnimationFrame(() => {
           for (const key in elementRectInfo) {
-            if (Object.prototype.hasOwnProperty.call(elementRectInfo, key)) {
+            if (
+              Object.prototype.hasOwnProperty.call(elementRectInfo, key) &&
+              !["startX", "startY"].includes(key)
+            ) {
               element.style[key] = elementRectInfo[key] + "px";
             }
           }
@@ -54,7 +64,7 @@
       });
       window.addEventListener("mouseup", (e) => {
         isPainting = false;
-        console.log(elementRectInfo);
+        console.log(JSON.stringify(elementRectInfo));
         for (const key in elementRectInfo) {
           elementRectInfo[key] = 0;
         }
