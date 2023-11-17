@@ -15,6 +15,10 @@ for (const item of obj) {
   console.log(item);
 }
 
+for (const key in obj) {
+ console.log(key, obj[key]);
+}
+
 
 // 生成器
 Object.prototype[Symbol.iterator] = function* () {
